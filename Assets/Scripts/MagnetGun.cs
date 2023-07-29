@@ -6,15 +6,20 @@ using UnityEngine.Rendering.Universal;
 public class MagnetGun : MonoBehaviour
 {
     [SerializeField]
-    List<GameObject> gunParts = new List<GameObject>();
+    List<GameObject> gunParts = new ();
     [SerializeField]
     Material activated, deactivated;
     [SerializeField]
     Transform gunTip;
     [SerializeField]
     float gunRange;
+    [SerializeField]
+    GameObject bulletPrefab;
+    [SerializeField]
+    Transform shootPoint;
 
     GameObject target;
+    GameObject bullet;
 
     public void Select()
     {
@@ -28,14 +33,8 @@ public class MagnetGun : MonoBehaviour
     }
     public void Activate()
     {
-        RaycastHit hit;
-
-        if (Physics.Raycast(gunTip.position, gunTip.forward, out hit, gunRange)
-            && hit.collider.gameObject.CompareTag("Interactables"))
-        {
-            target = hit.collider.gameObject;
-            target.GetComponent<Target>().Pull();
-        }
+        bullet = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+        bullet.GetComponent<Rigidbody>().velocity = shootPoint.forward * 25;
     }
     public void Deactivate()
     {
